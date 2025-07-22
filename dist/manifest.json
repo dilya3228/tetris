@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "HH Автокликер",
+  "version": "1.0",
+  "description": "Автоматическая отправка откликов на hh.ru",
+  "permissions": ["scripting", "tabs", "activeTab"],
+  "host_permissions": ["https://hh.ru/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://hh.ru/*"],
+      "js": ["script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
