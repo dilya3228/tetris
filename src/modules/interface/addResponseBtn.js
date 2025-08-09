@@ -39,6 +39,7 @@ export async function addResponseBtn() {
   // Ищем в клоне новую кнопку по атрибуту
   const newButton = clonedItem.querySelector('[data-action="submit-responses"]');
 
+  console.log(newButton, 'newButton')
   // Навешиваем обработчик клика на новую кнопку
   newButton.addEventListener('click', toggleResponseBtn);
 }

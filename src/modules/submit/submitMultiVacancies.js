@@ -25,62 +25,110 @@ import { submitCoverLetterPopup } from "../popup/submitCoverLetterPopup.js";
 
 // Импортируем функцию для отправки сопроводительного письма напрямую
 import { submitCoverLetter } from "../popup/submitCoverLetter.js";
+import {addToSkippedUrls, goBackAndWait, pageHasText} from './helpers.js'
 
-// Функция для отправки откликов на несколько вакансий
 export async function submitMultiVacancies() {
-  // Находим все доступные вакансии
-  const vacancies = document.querySelectorAll(SELECTORS.vacancyCards);
 
-  // Если вакансии не найдены, прекращаем выполнение
+  const isFormPage = location.href.includes("startedWithQuestion=false") || pageHasText("Для отклика необходимо ответить");
+
+  console.log( pageHasText("Для отклика необходимо ответить"), ' найдено - Для отклика необходимо ответить')
+
+  console.log(isFormPage)
+  const skip = new Set(JSON.parse(localStorage.getItem("hh_skip_vacancy_ids") || "[]"));
+
+  // Проверка на форме-опроснике ли мы
+  if (isFormPage) {
+    const url = new URL(location.href);
+    const id = url.searchParams.get("vacancyId");
+    if (id) {
+
+      skip.add(id);
+      localStorage.setItem("hh_skip_vacancy_ids", JSON.stringify([...skip]));
+      console.warn("🚫 Добавил в skip по startedWithQuestion:", id);
+    }
+    // await goBackAndWait({ timeout: 20000 });
+    addToSkippedUrls(location.href); // сохраняем вакансию в список, чтобы потом вручную ссылки открыть
+    await goBackAndWait();
+
+    await delay(300);
+
+    return;
+  }
+
+  const vacancies = document.querySelectorAll(SELECTORS.vacancyCards);
   if (!vacancies.length) return;
 
-  // Проходим по каждой вакансии и отправляем отклик
-  for (const vacancy of vacancies) {
-    // Если процесс отправки был остановлен, прекращаем выполнение
-    if (!getIsSubmitting()) break;
 
-    // Плавно прокручиваем вакансии и визуально выделяем синей рамкой
+  for (const vacancy of vacancies) {
+    if (!getIsSubmitting()) {
+      console.warn("источник бага - getIsSubmitting() вернул false — прерываю цикл преждевременно");
+      return;
+    }
+
     vacancy.scrollIntoView({ behavior: "smooth", block: "center" });
     vacancy.style.boxShadow = "0 0 8px #0059b3";
 
-    // Пропускаем вакансию, если установлен флаг пропуска
-    // if (skipVacancy()) continue;
-
-    // Находим название вакансии
-    const vacancyTitle = vacancy.querySelector(
-      SELECTORS.vacancyTitle
-    )?.innerText;
-
-    // Находим кнопку "Откликнуться"
     const respondBtn = vacancy.querySelector(SELECTORS.respondBtn);
+    console.log(respondBtn, 'respondBtn')
+    if (!respondBtn) {
+      console.warn("⛔ Кнопка отклика не найдена, пропускаю");
+      vacancy.style.boxShadow = "0 0 4px red";
+      continue;
+    }
 
-    // Проверяем, доступна ли кнопка отклика
+    // 🛡️ Защита: кнопка не 'Откликнуться'
+    if (!["Respond", "Откликнуться"].includes(respondBtn.innerText)) {
+      console.log("ℹ️ Кнопка неактивна или неподходящая, пропускаю");
+      continue;
+    }
+
+    const href = respondBtn?.getAttribute("href") || respondBtn?.dataset?.href;
+    const vacancyId = (() => {
+      try {
+        const u = new URL(href, location.origin);
+        return u.searchParams.get("vacancyId");
+      } catch {
+        return null;
+      }
+    })();
+
+    // Пропуск по skip-листу
+    if (vacancyId && skip.has(vacancyId)) {
+      console.warn("⏭️ Пропускаю вакансию (в skip):", vacancyId);
+      vacancy.style.boxShadow = "0 0 4px orange";
+      continue;
+    }
+
+    await delay(500);
+
+    const companyTitle = vacancy.querySelector(SELECTORS.companyTitle)?.innerText;
+
     if (["Respond", "Откликнуться"].includes(respondBtn?.innerText)) {
-      // Нажимаем кнопку "Откликнуться"
+      const preClickDelay = getRandomDelay(3000, 5000);
+      console.log(`⏳ Задержка перед кликом по кнопке: ${Math.floor(preClickDelay / 1000)} сек`);
+      await delay(preClickDelay);
+
       respondBtn.click();
 
-      // Ждём заданное время перед продолжением
-      // await delay(CONSTANTS.delayMs);
+      await delay(800);
+
       const delayMs = getRandomDelay(5000, 10000);
       console.log(`⏳ Задержка перед следующим откликом: ${Math.floor(delayMs / 1000)} сек`);
       await delay(delayMs);
-      // Подтверждаем отклик на вакансию в другой стране, если открылся попап
-      await confirmCountry();
 
-      // Подтверждаем отклик на вакансию "Непрямой работодатель", если открылся попап
+      await confirmCountry();
       await confirmEmployerAlert();
 
-      // Проверяем, открыт ли попап формы отклика
       if (checkPopupActive()) {
-        // Если попап открыт, отправляем сопроводительное письмо через попап
-        await submitCoverLetterPopup(vacancyTitle);
+        console.log('попало в submitCoverLetterPopup')
+        await submitCoverLetterPopup(companyTitle);
       } else {
-        // Иначе отправляем сопроводительное письмо напрямую
-        await submitCoverLetter(vacancyTitle);
+        console.log('функция submitCoverLetter вызвана из submitMultiVacancies')
+
+        await submitCoverLetter(companyTitle);
       }
     }
 
-    // Убираем синюю рамку после обработки текущей вакансии
     vacancy.style.boxShadow = "";
   }
 }

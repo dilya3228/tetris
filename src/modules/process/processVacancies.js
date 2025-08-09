@@ -29,10 +29,14 @@ export async function processVacancies() {
 
   // Если в адресе страницы содержится путь отдельной вакансии
   if (url.includes(vacancy)) {
+    console.log('вызвана submitSingleVacancy')
+
     // Отправляем отклик на одну вакансию
     await submitSingleVacancy();
     // Если в адресе страницы содержится путь списка вакансий
   } else if (vacancies.some((path) => url.includes(path))) {
+
+    console.log('вызвана submitMultiVacancies')
     // Отправляем отклики на несколько вакансий
     await submitMultiVacancies();
 

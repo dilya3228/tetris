@@ -36,6 +36,9 @@ export const SELECTORS = {
   // Селектор заголовка вакансии
   vacancyTitle: "[data-qa='serp-item__title']",
 
+  // Селектор заголовка вакансии
+  companyTitle: "[data-qa='vacancy-serp__vacancy-employer-text']",
+
   // Селектор кнопки "Приложить письмо"
   addCoverLetter: '[data-qa="vacancy-response-letter-toggle-text"]',
 

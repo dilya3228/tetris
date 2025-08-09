@@ -4,10 +4,10 @@
   "version": "1.0",
   "description": "Автоматическая отправка откликов на hh.ru",
   "permissions": ["scripting", "tabs", "activeTab"],
-  "host_permissions": ["https://hh.ru/*"],
+  "host_permissions": ["https://hh.ru/*", "https://spb.hh.ru/*"],
   "content_scripts": [
     {
-      "matches": ["https://hh.ru/*"],
+      "matches": ["https://hh.ru/*", "https://spb.hh.ru/*"],
       "js": ["script.js"],
       "run_at": "document_idle"
     }

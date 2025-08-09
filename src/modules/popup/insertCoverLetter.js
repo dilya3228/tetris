@@ -8,7 +8,7 @@ import { TEMPLATES } from '../../data/data.js';
 import { triggerInputChange } from '../../utils/triggerInputChange.js';
 
 // Функция для добавления готового письма в поле ввода
-export function insertCoverLetter(coverLetter, vacancyName) {
+export function insertCoverLetter(coverLetter, companyName) {
   // Ищем поле ввода для сопроводительного письма
   const coverLetterInput =
     document.querySelector(SELECTORS.coverLetterInput) ||
@@ -18,7 +18,7 @@ export function insertCoverLetter(coverLetter, vacancyName) {
   if (!coverLetterInput) return;
 
   // Формируем письмо, подставив в него название вакансии
-  const messageValue = TEMPLATES[coverLetter].replace('{#vacancyName}', vacancyName);
+  const messageValue = TEMPLATES[coverLetter].replace('{#companyName}', companyName);
 
   // Добавляем в поле готовое письмо через сеттер
   triggerInputChange(coverLetterInput, messageValue);

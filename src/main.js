@@ -17,12 +17,13 @@ import { setIsSubmitting } from "./globals/globals";
   await delay(5000); // небольшая пауза
 
   // ⬇️ автозапуск, если ранее был включен флаг autoRepeat
-  if (localStorage.getItem("autoRepeat") === "true") {
+  // if (localStorage.getItem("autoRepeat") === "true") {
     console.log("🔁 Автозапуск toggleResponseBtn после reload");
-    toggleResponseBtn(); // он сам вызовет processVacancies внутри
+
+    await toggleResponseBtn(); // он сам вызовет processVacancies внутри
     // setIsSubmitting(true);
     // localStorage.setItem("autoRepeat", "true");
-  } else {
-    await processVacancies(); // если не автозапуск — выполняем вручную
-  }
+  // } else {
+  //   await processVacancies(); // если не автозапуск — выполняем вручную
+  // }
 })();

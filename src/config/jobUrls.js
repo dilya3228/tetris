@@ -5,7 +5,7 @@ export const JOB_URLS = {
     vacancyPage: 'hh.ru/vacancy',
 
     // Ссылка на страницу списка вакансий
-    vacancyList: ['hh.ru', 'hh.ru/search/vacancy'],
+    vacancyList: ['hh.ru', 'hh.ru/search/vacancy', 'spb.hh.ru/search/vacancy', 'spb.hh.ru'],
   },
 
   superJob: {},
