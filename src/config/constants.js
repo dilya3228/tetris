@@ -11,4 +11,3 @@ export const CONSTANTS = {
 };
 
 export const HH_LISTING_URL = "https://spb.hh.ru/search/vacancy?text=React&excluded_text=&salary=&salary=&salary_mode=&currency_code=RUR&experience=doesNotMatter&order_by=relevance&search_period=1&items_on_page=50&L_save_area=true&hhtmFrom=vacancy_search_filter";
-

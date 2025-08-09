@@ -10,7 +10,7 @@ import { processVacancies } from "./modules/process/processVacancies";
 import { delay } from "./utils/delay";
 import { toggleResponseBtn } from "./modules/interface/toggleResponseBtn";
 import { setIsSubmitting } from "./globals/globals";
-
+import '../src/modules/submit/telegramSending';
 // Основная точка входа в приложение
 (async function main() {
   await addResponseBtn(); // визуально добавляем кнопку
