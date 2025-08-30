@@ -19,6 +19,9 @@ export const SELECTORS = {
   // Селектор попапа "Непрямой работодатель"
   alertBox: '[data-qa="magritte-alert"]',
 
+  // Просмотрел вакансию бот работодателя, перезагружаем страницу
+  alertAboutReadText: "[data-qa=magritte-form-helper-text-wrapper]",
+
   // Селектор кнопки подтверждения выбора страны
   countryConfirmBtn: '[data-qa="relocation-warning-confirm"]',
 

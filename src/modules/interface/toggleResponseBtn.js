@@ -48,7 +48,6 @@ export async function toggleResponseBtn() {
     // 2. Извлекаем vacancyId из URL
     const url = new URL(currentUrl);
     const badId = url.searchParams.get("vacancyId");
-    console.log(badId, 'badId')
     // 3. Записываем его в skip-лист
     if (badId) {
       const skip = new Set(JSON.parse(localStorage.getItem("hh_skip_vacancy_ids") || "[]"));
@@ -86,7 +85,6 @@ export async function toggleResponseBtn() {
   } catch (error) {
     console.error("Ошибка при отправке откликов:", error);
   } finally {
-    console.log('finially')
     setIsSubmitting(false);
     button.textContent = "Отправить отклики";
     console.log("✅ Отправка откликов завершена");
@@ -94,7 +92,6 @@ export async function toggleResponseBtn() {
     if (localStorage.getItem("autoRepeat") === "true") {
       console.log("⏳ Таймер: 1 час до перезагрузки страницы...");
       setTimeout(() => {
-        console.log("🔁 Перезагружаем страницу — прошло 1 час");
         location.reload();
       }, 3600000);
     }

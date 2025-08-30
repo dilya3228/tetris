@@ -7,8 +7,11 @@ import { submitCoverLetter } from '../popup/submitCoverLetter.js';
 import {delay, getRandomDelay} from "../../utils/delay";
 import {insertCoverLetter} from "../popup/insertCoverLetter";
 import {confirmCountry, confirmEmployerAlert} from "../../utils/popupHelpers";
+import {handleAlreadyViewedAndExit} from "../../utils/alreadyViewedAndExit";
 
 export async function submitSingleVacancy() {
+  if (await handleAlreadyViewedAndExit()) return;
+
   const card = document.querySelector(SELECTORS.vacancyCard);
   const skip = new Set(JSON.parse(localStorage.getItem("hh_skip_vacancy_ids") || "[]"));
 
@@ -40,8 +43,6 @@ export async function submitSingleVacancy() {
   const submitBtn = document.querySelector('form#cover-letter button[type="submit"]');
 
   if (textarea && submitBtn) {
-    console.log("✏️ Обнаружено поле сопроводительного письма — вставляем текст");
-
     const titleEl = document.querySelector('[data-qa="vacancy-serp__vacancy-employer-text"]');
     const vacancyTitle = titleEl?.innerText || "компанию";
 

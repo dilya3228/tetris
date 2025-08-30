@@ -26,14 +26,12 @@ import { submitCoverLetterPopup } from "../popup/submitCoverLetterPopup.js";
 // Импортируем функцию для отправки сопроводительного письма напрямую
 import { submitCoverLetter } from "../popup/submitCoverLetter.js";
 import {addToSkippedUrls, goBackAndWait, pageHasText} from './helpers.js'
+import {handleAlreadyViewedAndExit} from "../../utils/alreadyViewedAndExit";
 
 export async function submitMultiVacancies() {
 
   const isFormPage = location.href.includes("startedWithQuestion=false") || pageHasText("Для отклика необходимо ответить");
 
-  console.log( pageHasText("Для отклика необходимо ответить"), ' найдено - Для отклика необходимо ответить')
-
-  console.log(isFormPage)
   const skip = new Set(JSON.parse(localStorage.getItem("hh_skip_vacancy_ids") || "[]"));
 
   // Проверка на форме-опроснике ли мы
@@ -69,7 +67,6 @@ export async function submitMultiVacancies() {
     vacancy.style.boxShadow = "0 0 8px #0059b3";
 
     const respondBtn = vacancy.querySelector(SELECTORS.respondBtn);
-    console.log(respondBtn, 'respondBtn')
     if (!respondBtn) {
       console.warn("⛔ Кнопка отклика не найдена, пропускаю");
       vacancy.style.boxShadow = "0 0 4px red";
@@ -78,7 +75,7 @@ export async function submitMultiVacancies() {
 
     // 🛡️ Защита: кнопка не 'Откликнуться'
     if (!["Respond", "Откликнуться"].includes(respondBtn.innerText)) {
-      console.log("ℹ️ Кнопка неактивна или неподходящая, пропускаю");
+      console.log(" Кнопка неактивна или неподходящая, пропускаю");
       continue;
     }
 
@@ -112,6 +109,8 @@ export async function submitMultiVacancies() {
 
       await delay(800);
 
+      if (await handleAlreadyViewedAndExit()) return;
+
       const delayMs = getRandomDelay(5000, 10000);
       console.log(`⏳ Задержка перед следующим откликом: ${Math.floor(delayMs / 1000)} сек`);
       await delay(delayMs);
@@ -120,11 +119,8 @@ export async function submitMultiVacancies() {
       await confirmEmployerAlert();
 
       if (checkPopupActive()) {
-        console.log('попало в submitCoverLetterPopup')
         await submitCoverLetterPopup(companyTitle);
       } else {
-        console.log('функция submitCoverLetter вызвана из submitMultiVacancies')
-
         await submitCoverLetter(companyTitle);
       }
     }

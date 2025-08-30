@@ -13,9 +13,12 @@ import { insertCoverLetter } from './insertCoverLetter.js';
 // Импортируем функцию для закрытия чата
 import { checkChatikActive } from '../../utils/popupHelpers.js';
 import {addToSkippedUrls, goBackAndWait} from '../submit/helpers'
+import {handleAlreadyViewedAndExit} from "../../utils/alreadyViewedAndExit";
 // Функция для отправки сопроводительного письма
 export async function submitCoverLetter(companyTitle) {
   const currentUrl = window.location.href;
+
+  if (await handleAlreadyViewedAndExit()) return;
 
   if (currentUrl.includes("startedWithQuestion")) {
     const url = new URL(currentUrl);
@@ -56,7 +59,6 @@ export async function submitCoverLetter(companyTitle) {
   // Вставляем сопроводительное письмо
   insertCoverLetter(CONSTANTS.coverLetter, companyTitle);
 
-  console.log('интерпретатор дошел до Отправить')
   // Нажимаем кнопку "Отправить"
   sendBtn.click();
 

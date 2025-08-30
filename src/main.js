@@ -13,12 +13,11 @@ import { setIsSubmitting } from "./globals/globals";
 import '../src/modules/submit/telegramSending';
 // Основная точка входа в приложение
 (async function main() {
-  await addResponseBtn(); // визуально добавляем кнопку
+  // await addResponseBtn(); // визуально добавляем кнопку
   await delay(5000); // небольшая пауза
 
   // ⬇️ автозапуск, если ранее был включен флаг autoRepeat
   // if (localStorage.getItem("autoRepeat") === "true") {
-    console.log("🔁 Автозапуск toggleResponseBtn после reload");
 
     await toggleResponseBtn(); // он сам вызовет processVacancies внутри
     // setIsSubmitting(true);

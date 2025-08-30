@@ -22,21 +22,14 @@ export async function processVacancies() {
   // Ссылка на страницу списка вакансий
   const vacancies = JOB_URLS.hh.vacancyList;
 
-  console.log('Найдено вакансий:', vacancies);
-
-  console.log('vacancy 20 строка:', vacancy);
-
-
   // Если в адресе страницы содержится путь отдельной вакансии
   if (url.includes(vacancy)) {
-    console.log('вызвана submitSingleVacancy')
 
     // Отправляем отклик на одну вакансию
     await submitSingleVacancy();
     // Если в адресе страницы содержится путь списка вакансий
   } else if (vacancies.some((path) => url.includes(path))) {
 
-    console.log('вызвана submitMultiVacancies')
     // Отправляем отклики на несколько вакансий
     await submitMultiVacancies();
 
