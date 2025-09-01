@@ -38,62 +38,62 @@ import {addToSkippedUrls, goBackAndWait} from "../submit/helpers";
 //     history.back();
 //   });
 // }
-export async function toggleResponseBtn() {
-  const currentUrl = window.location.href;
-
-  // 1. Если бот попал на форму с startedWithQuestion=false — надо выйти и запомнить вакансию
-  if (currentUrl.includes("startedWithQuestion")) {
-    console.warn("📛 Попали на форму-опрос, выходим и запоминаем");
-
-    // 2. Извлекаем vacancyId из URL
-    const url = new URL(currentUrl);
-    const badId = url.searchParams.get("vacancyId");
-    // 3. Записываем его в skip-лист
-    if (badId) {
-      const skip = new Set(JSON.parse(localStorage.getItem("hh_skip_vacancy_ids") || "[]"));
-      skip.add(badId);
-      localStorage.setItem("hh_skip_vacancy_ids", JSON.stringify([...skip]));
-      console.log("🚫 Вакансия добавлена в skip:", badId);
-    }
-
-    // 4. Назад
-    // await goBackAndWait({ timeout: 20000 });
-    addToSkippedUrls(location.href); // сохраняем вакансию в список, чтобы потом вручную ссылки открыть
-
-    await goBackAndWait();
-    return;
-  }
-
-  // === обычная логика ===
-  const button = document.querySelector('[data-action="submit-responses"]');
-
-  if (getIsSubmitting()) {
-    setIsSubmitting(false);
-    localStorage.removeItem("autoRepeat");
-    button.textContent = "Отправить отклики";
-    console.log("⏹️ Отправка откликов остановлена");
-    return;
-  }
-
-  setIsSubmitting(true);
-  localStorage.setItem("autoRepeat", "true");
-  button.textContent = "Остановить отправку";
-  console.log("▶️ Начата отправка откликов");
-
-  try {
-    await processVacancies();
-  } catch (error) {
-    console.error("Ошибка при отправке откликов:", error);
-  } finally {
-    setIsSubmitting(false);
-    button.textContent = "Отправить отклики";
-    console.log("✅ Отправка откликов завершена");
-
-    if (localStorage.getItem("autoRepeat") === "true") {
-      console.log("⏳ Таймер: 1 час до перезагрузки страницы...");
-      setTimeout(() => {
-        location.reload();
-      }, 3600000);
-    }
-  }
-}
+// export async function toggleResponseBtn() {
+//   const currentUrl = window.location.href;
+//
+//   // 1. Если бот попал на форму с startedWithQuestion=false — надо выйти и запомнить вакансию
+//   if (currentUrl.includes("startedWithQuestion")) {
+//     console.warn("📛 Попали на форму-опрос, выходим и запоминаем");
+//
+//     // 2. Извлекаем vacancyId из URL
+//     const url = new URL(currentUrl);
+//     const badId = url.searchParams.get("vacancyId");
+//     // 3. Записываем его в skip-лист
+//     if (badId) {
+//       const skip = new Set(JSON.parse(localStorage.getItem("hh_skip_vacancy_ids") || "[]"));
+//       skip.add(badId);
+//       localStorage.setItem("hh_skip_vacancy_ids", JSON.stringify([...skip]));
+//       console.log("🚫 Вакансия добавлена в skip:", badId);
+//     }
+//
+//     // 4. Назад
+//     // await goBackAndWait({ timeout: 20000 });
+//     addToSkippedUrls(location.href); // сохраняем вакансию в список, чтобы потом вручную ссылки открыть
+//
+//     await goBackAndWait();
+//     return;
+//   }
+//
+//   // === обычная логика ===
+//   const button = document.querySelector('[data-action="submit-responses"]');
+//
+//   if (getIsSubmitting()) {
+//     setIsSubmitting(false);
+//     localStorage.removeItem("autoRepeat");
+//     button.textContent = "Отправить отклики";
+//     console.log("⏹️ Отправка откликов остановлена");
+//     return;
+//   }
+//
+//   setIsSubmitting(true);
+//   localStorage.setItem("autoRepeat", "true");
+//   button.textContent = "Остановить отправку";
+//   console.log("▶️ Начата отправка откликов");
+//
+//   try {
+//     await processVacancies();
+//   } catch (error) {
+//     console.error("Ошибка при отправке откликов:", error);
+//   } finally {
+//     setIsSubmitting(false);
+//     button.textContent = "Отправить отклики";
+//     console.log("✅ Отправка откликов завершена");
+//
+//     if (localStorage.getItem("autoRepeat") === "true") {
+//       console.log("⏳ Таймер: 1 час до перезагрузки страницы...");
+//       setTimeout(() => {
+//         location.reload();
+//       }, 3600000);
+//     }
+//   }
+// }

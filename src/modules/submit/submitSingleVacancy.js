@@ -8,8 +8,11 @@ import {delay, getRandomDelay} from "../../utils/delay";
 import {insertCoverLetter} from "../popup/insertCoverLetter";
 import {confirmCountry, confirmEmployerAlert} from "../../utils/popupHelpers";
 import {handleAlreadyViewedAndExit} from "../../utils/alreadyViewedAndExit";
+import {shouldStop} from "../interface/addResponseBtn";
 
 export async function submitSingleVacancy() {
+  if (shouldStop()) return;
+
   if (await handleAlreadyViewedAndExit()) return;
 
   const card = document.querySelector(SELECTORS.vacancyCard);
@@ -50,6 +53,8 @@ export async function submitSingleVacancy() {
     const preSubmitDelay = getRandomDelay(3000, 5000);
     console.log(`⏳ Задержка перед отправкой формы: ${Math.floor(preSubmitDelay / 1000)} сек`);
     await delay(preSubmitDelay);
+
+    if (shouldStop()) return;
 
     submitBtn.click();
     await delay(1000); // дать странице отреагировать

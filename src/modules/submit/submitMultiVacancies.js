@@ -27,8 +27,10 @@ import { submitCoverLetterPopup } from "../popup/submitCoverLetterPopup.js";
 import { submitCoverLetter } from "../popup/submitCoverLetter.js";
 import {addToSkippedUrls, goBackAndWait, pageHasText} from './helpers.js'
 import {handleAlreadyViewedAndExit} from "../../utils/alreadyViewedAndExit";
+import {shouldStop} from "../interface/addResponseBtn";
 
 export async function submitMultiVacancies() {
+  if (shouldStop()) return;
 
   const isFormPage = location.href.includes("startedWithQuestion=false") || pageHasText("Для отклика необходимо ответить");
 
@@ -59,7 +61,7 @@ export async function submitMultiVacancies() {
 
   for (const vacancy of vacancies) {
     if (!getIsSubmitting()) {
-      console.warn("источник бага - getIsSubmitting() вернул false — прерываю цикл преждевременно");
+      console.warn("getIsSubmitting() вернул false — прерываю цикл преждевременно");
       return;
     }
 

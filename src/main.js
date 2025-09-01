@@ -5,24 +5,28 @@
 // import { resumeMultiSubmit } from './utils/resumeMultiSubmit';
 
 // Импортируем функцию, которая добавляет кнопку "Отправить отклики"
-import { addResponseBtn } from "./modules/interface/addResponseBtn";
+import {addResponseBtn, isEnabled, startBot} from "./modules/interface/addResponseBtn";
 import { processVacancies } from "./modules/process/processVacancies";
 import { delay } from "./utils/delay";
-import { toggleResponseBtn } from "./modules/interface/toggleResponseBtn";
+// import { toggleResponseBtn } from "./modules/interface/toggleResponseBtn";
 import { setIsSubmitting } from "./globals/globals";
 import '../src/modules/submit/telegramSending';
 // Основная точка входа в приложение
+
 (async function main() {
-  // await addResponseBtn(); // визуально добавляем кнопку
-  await delay(5000); // небольшая пауза
+  await addResponseBtn();
+  await delay(500); // небольшая пауза для DOM
 
-  // ⬇️ автозапуск, если ранее был включен флаг autoRepeat
-  // if (localStorage.getItem("autoRepeat") === "true") {
+  // анти-дубль после replace()
+  if (sessionStorage.getItem("hh_nav_lock") === "1") {
+    sessionStorage.removeItem("hh_nav_lock");
+  }
 
-    await toggleResponseBtn(); // он сам вызовет processVacancies внутри
-    // setIsSubmitting(true);
-    // localStorage.setItem("autoRepeat", "true");
-  // } else {
-  //   await processVacancies(); // если не автозапуск — выполняем вручную
-  // }
+  // автозапуск, если ранее был включён
+  if (isEnabled()) {
+    console.log("🔁 Автовозобновление бота по флагу");
+    await startBot();
+  } else {
+    console.log("⏸️ Бот выключен, ждём нажатия кнопки");
+  }
 })();
